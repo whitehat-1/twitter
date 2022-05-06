@@ -18,7 +18,7 @@ RUN pip install -r requirements.txt
 # Copy codebase
 COPY . /twitter/
 
-# create a new user
+# create new user
 RUN adduser --disabled-password --gecos '' jerry
 
 # Set user as the owner of directory
