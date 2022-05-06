@@ -8,7 +8,7 @@ def get_application():
     # start the application.
     app = FastAPI()
 
-    # Connect to database.
+    # Connect to the database.
     app.add_event_handler("startup", create_start_app_handler(app))
 
     return app
