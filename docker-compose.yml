@@ -16,7 +16,7 @@ services:
     depends_on:
       - db
     restart: "on-failure"
-
+ 
   db:
     image: postgres:12.1-alpine
     volumes:
