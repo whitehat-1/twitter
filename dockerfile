@@ -19,7 +19,7 @@ RUN pip install -r requirements.txt
 COPY . /twitter/
 
 # create new user
-RUN adduser --disabled-password --gecos '' jerry
+RUN adduser --disabled-password --gecos  jerry
 
 # Set user as the owner of directory
 RUN chown -R jerry:jerry /twitter
