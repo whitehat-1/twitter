@@ -3,7 +3,7 @@ FROM python:3.10.1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Only update packages
+# update packages
 RUN apt-get update
 
 # Set working directory
@@ -19,7 +19,7 @@ RUN pip install -r requirements.txt
 COPY . /twitter/
 
 # create new user
-RUN adduser --disabled-password --gecos  jerry
+RUN adduser --disabled-password --gecos '' jerry
 
 # Set user as the owner of directory
 RUN chown -R jerry:jerry /twitter
