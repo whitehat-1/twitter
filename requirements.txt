@@ -25,7 +25,14 @@ passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
 
 # AWS
-boto3==1.21.42
+boto3==1.21.42 #AWS SDK for python
 
 # Numerical Computing
 numpy==1.22.3
+
+#social auth
+#google-auth==2.6.5
+# Authlib==1.0.1
+
+#QR Code Scanner
+#qrcode==7.3.1
