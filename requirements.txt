@@ -9,9 +9,9 @@ flake8==4.0.1
 black==22.3.0
 
 # database
-aerich==0.6.3
-redis==4.2.2
-tortoise-orm[asyncpg]==0.19.0
+aerich==0.6.3 #used for database migrations 
+redis==4.2.2 
+tortoise-orm[asyncpg]==0.19.0 
 
 # unit/integration tests
 pytest==7.1.1
