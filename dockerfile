@@ -24,5 +24,6 @@ RUN adduser --disabled-password --gecos  jerry
 # Set user as the owner of directory
 RUN chown -R jerry:jerry /twitter
 
-# Set user to be jerry
+##Set user to be jerry
 USER jerry
+
