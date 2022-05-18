@@ -1,7 +1,7 @@
 ##this modules handles application configuration
 
 from starlette.config import Config
-from starlett.datastructures import secret
+from starlette.datastructures import Secret
 
 config = Config(".env")
 
