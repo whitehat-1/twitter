@@ -4,6 +4,7 @@ from typing import Callable
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
 
+
 from config import (
     POSTGRES_USER,
     POSTGRES_PASSWORD,
@@ -44,8 +45,8 @@ async def init_db(app: FastAPI) -> None:
     try:
         register_tortoise(
             app,
-            db_url=f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}",  # noqa
-            modules={"models": MODELS},
+            db_url=f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}", 
+            modules={"models": ['aerich.models']},
             generate_schemas=False,
             add_exception_handlers=True,
         )
