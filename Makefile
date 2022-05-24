@@ -34,6 +34,8 @@ flake8:
 	docker-compose run twitter sh -c 'flake8'
 #reference the aerich github repo (AERICH IS TO TORTOISE ORM)
 init-db:
+##Success create app migrate location migrations/models
+##Success generate schema for app "models"
 	docker-compose run twitter sh -c 'aerich init -t library.database.database.TORTOISE_ORM'
 	docker-compose run twitter sh -c 'aerich init-db'
 
