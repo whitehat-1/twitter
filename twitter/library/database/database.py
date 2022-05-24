@@ -46,7 +46,7 @@ async def init_db(app: FastAPI) -> None:
         register_tortoise(
             app,
             db_url=f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}", #noqa
-            modules={"models": ['aerich.models']},
+            modules={"models":MODELS},
             generate_schemas=False,
             add_exception_handlers=True,
         )
