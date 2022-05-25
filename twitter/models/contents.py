@@ -18,7 +18,7 @@ class Like(BaseModel):
     tweet = fields.ForeignKeyField(
         "models.Tweet", related_name="likes", null=True
     )
-    #know who liked a particular tweet
+    # know who liked a particular tweet
     user = fields.ForeignKeyField(
         "models.User", related_name="likes", null=True
     )
@@ -30,7 +30,7 @@ class Comment(BaseModel):
     tweet = fields.ForeignKeyField(
         "models.Tweet", related_name="comments", null=True
     )
-    #know who commented a particular tweet
+    # know who commented a particular tweet
     user = fields.ForeignKeyField(
         "models.User", related_name="comments", null=True
     )
