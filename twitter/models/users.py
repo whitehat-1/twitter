@@ -2,7 +2,6 @@ from tortoise import fields
 
 from models.base import BaseModel
 
-
 class User(BaseModel):
     """User table"""
 
