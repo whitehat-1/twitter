@@ -37,6 +37,7 @@ async def register(data: UserCreate):
     return created_user
 
 
+
 @router.get("/verify-account/{otp}", response_model=UserPublic)
 async def verify(otp: str = Path(...)):
     user_id = otp_manager.get_otp_user(otp)
