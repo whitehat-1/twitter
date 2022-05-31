@@ -39,7 +39,7 @@ EXPIRES_MINUTES = 90
 class JWTCreateSchema(BaseModel):
     username: str
     email: EmailStr
-
+    
 class JWTDecodeSchema(BaseModel):
     jwt: str    
 
