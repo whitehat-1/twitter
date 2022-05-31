@@ -3,10 +3,12 @@ from fastapi import FastAPI
 from library.database.database import create_start_app_handler
 from routers.auth import router as AuthRouter
 from routers.content import router as ContentRouter
-from schemas import JWTSchema
+#
+# from passlib.context import CryptContext
+from pydantic import BaseModel, EmailStr
 from jose import jwt, JWTError
-from pydantic import ValidationError
-from config import SECRET_KEY, ALGORITHM
+from datetime import datetime
+
 
 def get_application():
 
@@ -27,59 +29,40 @@ app = get_application()
 @app.get("/")
 async def home():
     return {"detail": "hello world!"}
+    
 
+#for jose, we need the secret key, an algorithm and expiration time
+SECRET_KEY = "6e9b583150caad16b6aa99063e148daf4fd6cd8a2683fba7ba8b3d050df4b2bb"  
+ALGORITHM = "HS256"
+EXPIRES_MINUTES = 90
 
-class Hasher():
-    @staticmethod
-    def verify_password(plain_password, hashed_password):
-        return pwd_context.verify(plain_password, hashed_password)
+class JWTCreateSchema(BaseModel):
+    username: str
+    email: EmailStr
 
-    @staticmethod
-    def get_password_hash(password):
-        return pwd_context.hash(password)
+class JWTDecodeSchema(BaseModel):
+    jwt: str    
 
+def create_jwt(data: JWTCreateSchema):
+    data_dict = data.dict()
+    encoded_token = jwt.encode(data_dict, SECRET_KEY, algorithm = ALGORITHM)
+    return encoded_token 
 
-@app.post("/register/")
-async def register(data: Registration):
-    """User Registration endpoint"""
-    hashed_password = pwd_context.hash(data.password)
-    user_create = await Register.create(
-        **data.dict(exclude_unset=True),
+def decode_jwt(token):
+    detail = jwt.decode(
+        token, str(SECRET_KEY), algorithms = [ALGORITHM]
     )
-        # Generate an auth token.
-    jwt_data = JWTSchema(user_id=str(user_create.id))
-    to_encode = jwt_data.dict()
-    expire = datetime.now(timezone.utc) + timedelta(days=30)
-    to_encode.update({"expire": str(expire)})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    context = {
-        "user": data.full_name,
-        "token": encoded_jwt
-    }
-    return context
- 
-@app.post("/auth/login/")
-async def get_current_user(token: str):
-    auth_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Your auth token is invalid.",
-    )
-    try:
-        payload = jwt.decode(token, str(SECRET_KEY), algorithms=[ALGORITHM])
-        user_id = payload.get("user_id")
-        expire = payload.get("expire")
+    return detail    
 
-        token_data = JWTSchema(user_id=user_id, expire=expire)
+@app.post("/jwt/")
+async def verify(data: JWTCreateSchema):
+    jwtdata = JWTCreateSchema(username = data.username, email = data.email)
+    jwt = create_jwt(data=jwtdata)
+    return {"jwt_token": jwt}
 
-        if user_id is None or expire is None:
-            raise auth_exception
-    except (JWTError, ValidationError):
-        raise auth_exception  
-    user = await Register.get_or_none(id=token_data.user_id)
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="This user does not exist.",
-        )
-
-    return user
+@app.get("/jwt/")
+async def reveal(data: JWTDecodeSchema):
+    data_dict = data.dict()
+    jwtdata = data_dict["jwt"]
+    detail = decode_jwt(jwtdata)
+    return {"detail": detail}
