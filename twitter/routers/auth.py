@@ -1,6 +1,6 @@
 from ast import Return
 from http.client import HTTPException
-from fastapi import APIRouter, Path ,status
+from fastapi import APIRouter, Path, HTTPException, status
 from library.schemas.register import UserCreate, UserPublic
 import bcrypt
 from passlib.context import CryptContext
@@ -17,12 +17,13 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 @router.post("/register/", response_model=UserPublic) ##refer to users.py
 async def register(data: UserCreate):
     ##Create account.
+
     email_exists = await User.filter(email=data.email).exists()
     username_exists = await User.filter(username=data.username).exists()
     if email_exists or username_exists:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="Username/Email already exists"
+            detail="Username or Email already exists"
             )
 
     hashed_password = pwd_context.hash(data.password)
@@ -40,11 +41,9 @@ async def register(data: UserCreate):
 async def verify(otp: str = Path(...)):
     user_id = otp_manager.get_otp_user(otp)
     if user_id is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORISED,
-        detail= "invalid OTP"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid OTP")
 
     await User.get(id=UUID(user_id)).update(
         email_verified= True
     )
-    return  User.get(id=UUID(user_id)) 
+    return  await User.get(id=UUID(user_id)) 
