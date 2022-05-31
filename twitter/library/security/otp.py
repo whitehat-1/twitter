@@ -1,7 +1,7 @@
 import random
 import string
-
 import redis
+
 
 class OTPManager:
     ##manages user OTP
@@ -25,5 +25,12 @@ class OTPManager:
             otp= cls.generate_token()
         cls.redis.set(otp, user_id, ex=expires)
         return otp
+
+    @classmethod
+    def get_otp_user(cls, otp: str):
+        #return the owner f the OTP
+        if cls.redis.exists(otp):
+            return cls.redis.get(otp).decode("utf-8")
+
 
 otp_manager = OTPManager()
