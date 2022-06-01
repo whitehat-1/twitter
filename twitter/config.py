@@ -16,3 +16,7 @@ POSTGRES_PASSWORD = config("POSTGRES_PASSWORD", cast=Secret)
 POSTGRES_SERVER = config("POSTGRES_SERVER", cast=Secret)
 POSTGRES_PORT = config("POSTGRES_PORT", cast=Secret)
 POSTGRES_DB = config("POSTGRES_DB", cast=Secret)
+
+SECRET_KEY = config("SECRET_KEY", cast=Secret)
+ALGORITHM = config("ALGORITHM", cast=Secret)
+

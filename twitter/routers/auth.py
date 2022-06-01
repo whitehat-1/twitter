@@ -1,4 +1,4 @@
-from ast import Return
+
 from http.client import HTTPException
 from fastapi import APIRouter, Path, HTTPException, status
 from library.schemas.register import UserCreate, UserPublic
@@ -6,8 +6,13 @@ import bcrypt
 from passlib.context import CryptContext
 from models.users import User
 import random
+from jose import jwt
 from library.security.otp import otp_manager
 from uuid import UUID
+from datetime import datetime, timedelta, timezone
+from config import SECRET_KEY, ALGORITHM
+
+from twitter.library.schemas.auth import AuthResponse, loginschema, JWTSchemas
 
 
 router = APIRouter(prefix="/auth")
@@ -35,7 +40,7 @@ async def register(data: UserCreate):
     token= otp_manager.create_otp(str(created_user.id))
     print(f'sending verification token: {token}')
     return created_user
-
+ 
 
 
 @router.get("/verify-account/{otp}", response_model=UserPublic)
@@ -48,3 +53,41 @@ async def verify(otp: str = Path(...)):
         email_verified= True
     )
     return  await User.get(id=UUID(user_id)) 
+
+
+
+@router.post("/login/", response_model=str)
+async def login(data: loginschema):
+    ##handle user login
+    user = await User.get_or_none(email=data.username_or_email)
+    
+    #Extract User.
+    if user is None:
+        user = await User.get_or_none(username=data.username_or_email)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+        detail="Incorrect username or email"
+        )
+    #Check password.
+    hashed_password = user.hashed_password
+    is_valid_password: bool = pwd_context.verify(data.password, hashed_password)
+    if is_valid_password is False:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Incorrect password"
+            )
+
+    #Generate JWT token.
+
+    jwt_data = JWTSchemas(
+        user_id=str(user.id),
+        expire=datetime.now(timezone.utc) + timedelta(minutes=15)
+    )
+
+    #encode jwt token (we will call the encode function from jose)
+    encoded_jwt = jwt.encode(jwt_data.dict(), SECRET_KEY, algorithm=ALGORITHM)
+    return AuthResponse(
+        user=user,
+        token=encoded_jwt
+    )
