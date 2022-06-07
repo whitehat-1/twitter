@@ -17,6 +17,7 @@ POSTGRES_SERVER = config("POSTGRES_SERVER", cast=Secret)
 POSTGRES_PORT = config("POSTGRES_PORT", cast=Secret)
 POSTGRES_DB = config("POSTGRES_DB", cast=Secret)
 
+DATABASE_URL = f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 SECRET_KEY = config("SECRET_KEY", cast=Secret)
 ALGORITHM = config("ALGORITHM", cast=Secret)
 

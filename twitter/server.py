@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from library.database.database import create_start_app_handler
 from routers.auth import router as AuthRouter
 from routers.content import router as ContentRouter
-#
+from routers.user import router as UsersRouter
 # from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 # from jose import jwt, JWTError
@@ -28,4 +28,4 @@ app = get_application()
 
 @app.get("/")
 async def home():
-    return {"detail": "hello world!"}
+    return {"detail": "Hello World"}

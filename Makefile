@@ -45,3 +45,6 @@ db-migrate:
 
 db-upgrade:
 	docker-compose run twitter sh -c 'aerich upgrade'
+
+test:
+	docker-compose run twitter sh -c 'python -m pytest -v -s -p no:warnings'

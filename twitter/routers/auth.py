@@ -10,7 +10,7 @@ from library.security.otp import otp_manager
 from uuid import UUID
 from datetime import datetime, timedelta, timezone
 from config import SECRET_KEY, ALGORITHM
-from jose import jwt, JWTError
+from jose import jwt
 
 from library.schemas.auth import AuthResponse, loginschema, JWTSchemas
 
