@@ -1,8 +1,9 @@
 from datetime import datetime
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
-from twitter.library.schemas.register import UserPublic
+from library.schemas.register import UserPublic
 
 class loginschema(BaseModel):
     username_or_email: str
@@ -10,7 +11,7 @@ class loginschema(BaseModel):
 
 class JWTSchemas(BaseModel):
     user_id: str
-    expire: datetime
+    expire: Optional[datetime]
 
 class AuthResponse(BaseModel):
     user: UserPublic

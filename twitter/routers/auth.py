@@ -6,13 +6,13 @@ import bcrypt
 from passlib.context import CryptContext
 from models.users import User
 import random
-from jose import jwt
 from library.security.otp import otp_manager
 from uuid import UUID
 from datetime import datetime, timedelta, timezone
 from config import SECRET_KEY, ALGORITHM
+from jose import jwt, JWTError
 
-from twitter.library.schemas.auth import AuthResponse, loginschema, JWTSchemas
+from library.schemas.auth import AuthResponse, loginschema, JWTSchemas
 
 
 router = APIRouter(prefix="/auth")
@@ -81,12 +81,16 @@ async def login(data: loginschema):
     #Generate JWT token.
 
     jwt_data = JWTSchemas(
-        user_id=str(user.id),
-        expire=datetime.now(timezone.utc) + timedelta(minutes=15)
+        user_id=str(user.id)
     )
 
+    to_encode = jwt_data.dict()
+
     #encode jwt token (we will call the encode function from jose)
-    encoded_jwt = jwt.encode(jwt_data.dict(), SECRET_KEY, algorithm=ALGORITHM)
+    expire= expire =str(datetime.now(timezone.utc) + timedelta(minutes=15))
+    to_encode.update({'expire':str(expire)})
+    
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return AuthResponse(
         user=user,
         token=encoded_jwt
