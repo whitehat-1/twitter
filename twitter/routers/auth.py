@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 from config import SECRET_KEY, ALGORITHM
 from jose import jwt
 
-from library.schemas.auth import AuthResponse, loginschema, JWTSchemas
+from library.schemas.auth import AuthResponse, loginschema, JWTSchema
 
 
 router = APIRouter(prefix="/auth")
@@ -80,14 +80,14 @@ async def login(data: loginschema):
 
     #Generate JWT token.
 
-    jwt_data = JWTSchemas(
+    jwt_data = JWTSchema(
         user_id=str(user.id)
     )
 
     to_encode = jwt_data.dict()
 
     #encode jwt token (we will call the encode function from jose)
-    expire= expire =str(datetime.now(timezone.utc) + timedelta(minutes=15))
+    expire= expire =str(datetime.now(timezone.utc) + timedelta(minutes=30))
     to_encode.update({'expire':str(expire)})
     
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

@@ -9,7 +9,7 @@ class loginschema(BaseModel):
     username_or_email: str
     password: str
 
-class JWTSchemas(BaseModel):
+class JWTSchema(BaseModel):
     user_id: str
     expire: Optional[datetime]
 
